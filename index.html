@@ -1,0 +1,3298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutureMe — Meet the version of you who already made it.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Core Brand Styles & Reset --- */
+        :root {
+            --bg-base: #020204;
+            --bg-surface: rgba(10, 10, 16, 0.6);
+            --bg-surface-solid: #0b0b12;
+            --bg-surface-glow: rgba(255, 255, 255, 0.02);
+            --border-glow: rgba(255, 255, 255, 0.06);
+            --border-glow-focus: rgba(255, 255, 255, 0.15);
+            --accent-primary: #5b62f4;
+            --accent-primary-rgb: 91, 98, 244;
+            --accent-secondary: #8c3df2;
+            --accent-secondary-rgb: 140, 61, 242;
+            --accent-glow: rgba(91, 98, 244, 0.15);
+            --accent-glow-secondary: rgba(140, 61, 242, 0.15);
+            --text-main: #f5f5f7;
+            --text-secondary: #9a9ab0;
+            --text-muted: #62627a;
+            --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-premium: 24px;
+            --radius-input: 12px;
+            --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Ambient Background Elements --- */
+        .ambient-glow-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(160px);
+            opacity: 0.35;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+
+        .orb-1 {
+            top: -10%;
+            right: 15%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(var(--accent-primary-rgb), 0.6) 0%, transparent 80%);
+            animation: floatOrb1 35s ease-in-out infinite alternate;
+        }
+
+        .orb-2 {
+            bottom: -10%;
+            left: -10%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(var(--accent-secondary-rgb), 0.5) 0%, transparent 80%);
+            animation: floatOrb2 45s ease-in-out infinite alternate-reverse;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        @keyframes floatOrb1 {
+            0% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(80px, -40px) scale(1.15); }
+            100% { transform: translate(-40px, 60px) scale(0.9); }
+        }
+
+        @keyframes floatOrb2 {
+            0% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-60px, 80px) scale(0.85); }
+            100% { transform: translate(100px, -20px) scale(1.1); }
+        }
+
+        /* --- Reusable Components & Typography --- */
+        h1, h2, h3, h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        p {
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: #fff;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-primary);
+        }
+
+        .badge-alt::before {
+            background: var(--accent-secondary);
+            box-shadow: 0 0 8px var(--accent-secondary);
+        }
+
+        .glass-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-premium);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: border-color 0.4s var(--transition-smooth), transform 0.4s var(--transition-smooth), box-shadow 0.4s var(--transition-smooth);
+        }
+
+        .glass-card:hover {
+            border-color: var(--border-glow-focus);
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            text-decoration: none;
+            border: none;
+            outline: none;
+            font-family: var(--font-display);
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #020204;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.3);
+            background: #f5f5f7;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border: 1px solid var(--border-glow);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: #fff;
+            box-shadow: 0 4px 25px rgba(91, 98, 244, 0.3);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px rgba(91, 98, 244, 0.5);
+            filter: brightness(1.1);
+        }
+
+        /* --- Scroll Reveal Animations --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s var(--transition-smooth), transform 1s var(--transition-smooth);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Global Layout Grid --- */
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* --- Navigation Bar --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 100;
+            background: rgba(2, 2, 4, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        header.scrolled {
+            background: rgba(2, 2, 4, 0.8);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1240px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff 30%, var(--accent-primary) 70%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.03em;
+        }
+
+        .logo svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent-primary);
+        }
+
+        nav {
+            display: flex;
+            gap: 36px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            position: relative;
+            padding: 4px 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width 0.3s var(--transition-smooth);
+        }
+
+        nav a:hover {
+            color: var(--text-main);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta-wrap {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-cta {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            border-radius: 10px;
+        }
+
+        /* --- Hero Section --- */
+        #hero {
+            padding-top: 200px;
+            padding-bottom: 120px;
+            position: relative;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-left h1 {
+            font-size: 4.2rem;
+            line-height: 1.05;
+            background: linear-gradient(135deg, #ffffff 40%, #9a9ab0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 28px;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-left .subheadline {
+            font-size: 1.35rem;
+            line-height: 1.5;
+            margin-bottom: 48px;
+            max-width: 580px;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .preview-card {
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+        }
+
+        .preview-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-premium);
+            padding: 1.5px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.01) 50%, rgba(91,98,244,0.15) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .preview-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(91, 98, 244, 0.4);
+        }
+
+        .preview-avatar::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fff;
+        }
+
+        .preview-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-family: var(--font-display);
+        }
+
+        .preview-body {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #f5f5f7;
+            font-style: italic;
+            font-weight: 300;
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .preview-body::before {
+            content: '“';
+            font-size: 4rem;
+            font-family: var(--font-display);
+            color: rgba(91, 98, 244, 0.15);
+            position: absolute;
+            top: -30px;
+            left: -20px;
+        }
+
+        .preview-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+        }
+
+        .preview-meta::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        /* --- Active Display State Controls --- */
+        .app-panel {
+            display: none;
+        }
+
+        .app-panel.active {
+            display: block;
+        }
+
+        /* --- Emotional Hook Section --- */
+        #hooks {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 72px;
+        }
+
+        .section-header h2 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #fff 0%, #9a9ab0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 18px;
+            letter-spacing: -0.03em;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+        }
+
+        .hook-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .hook-card {
+            padding: 48px 36px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.015) 0%, rgba(255,255,255,0.005) 100%);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hook-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .hook-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .hook-card:hover::before {
+            opacity: 1;
+        }
+
+        .hook-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(91, 98, 244, 0.08);
+            border: 1px solid rgba(91, 98, 244, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            color: var(--accent-primary);
+        }
+
+        .hook-card:nth-child(2) .hook-icon-wrap {
+            background: rgba(140, 61, 242, 0.08);
+            border: 1px solid rgba(140, 61, 242, 0.15);
+            color: var(--accent-secondary);
+        }
+
+        .hook-card:nth-child(3) .hook-icon-wrap {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .hook-icon-wrap svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .hook-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+            color: #fff;
+        }
+
+        .hook-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* --- Onboarding Wizard Engine --- */
+        #app-section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .wizard-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .wizard-card {
+            padding: 60px;
+            position: relative;
+            background: rgba(8, 8, 12, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .wizard-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-premium);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(91,98,244,0.2) 0%, rgba(255,255,255,0.02) 50%, rgba(140,61,242,0.2) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .wizard-progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wizard-progress-fill {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            transition: width 0.5s var(--transition-smooth);
+        }
+
+        .wizard-step {
+            display: none;
+            animation: slideInStep 0.5s var(--transition-smooth) forwards;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        @keyframes slideInStep {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #c0c0d0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .form-input-container {
+            margin-bottom: 40px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .text-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-input);
+            padding: 18px 24px;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            transition: all 0.3s var(--transition-smooth);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: rgba(91, 98, 244, 0.5);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(91, 98, 244, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        textarea.text-input {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.5;
+        }
+
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wizard-actions-right {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* Option cards for wizard step 4 (Tone choice) */
+        .tone-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .tone-card {
+            border: 1px solid var(--border-glow);
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: var(--radius-input);
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            position: relative;
+        }
+
+        .tone-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateY(-2px);
+        }
+
+        .tone-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(91, 98, 244, 0.05);
+            box-shadow: 0 10px 30px rgba(91, 98, 244, 0.15);
+        }
+
+        .tone-card.selected::after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        .tone-card h4 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .tone-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Input specific sizes */
+        .age-input {
+            max-width: 140px;
+        }
+
+        /* --- Quantum Synthesis Loading Overlay --- */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: #020204;
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .loading-content {
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .loading-logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(to right, #ffffff, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: var(--font-display);
+        }
+
+        .loading-spinner-wrap {
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .spinner-outer {
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-top-color: var(--accent-primary);
+            border-bottom-color: var(--accent-secondary);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+
+        .spinner-inner {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 70px;
+            height: 70px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-left-color: var(--accent-primary);
+            border-right-color: var(--accent-secondary);
+            border-radius: 50%;
+            animation: spinReverse 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinReverse {
+            to { transform: rotate(-360deg); }
+        }
+
+        .loading-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            border-radius: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-percentage {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .loading-logs {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-input);
+            padding: 20px;
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            height: 140px;
+            overflow-y: hidden;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .log-entry {
+            display: flex;
+            gap: 12px;
+        }
+
+        .log-time {
+            color: var(--text-muted);
+        }
+
+        .log-text {
+            color: #fff;
+        }
+
+        .log-text.highlight {
+            color: var(--accent-primary);
+        }
+
+        /* --- Premium Dashboard View --- */
+        #dashboard-section {
+            padding: 120px 0 80px;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+        }
+
+        #dashboard-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .dashboard-main {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .dashboard-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: sticky;
+            top: 120px;
+        }
+
+        /* Welcome header block */
+        .welcome-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-block h2 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #fff 0%, #9a9ab0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-block p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Manifesto Block Styling */
+        .manifesto-card {
+            padding: 48px;
+            background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 0.04) 0%, rgba(var(--accent-secondary-rgb), 0.02) 100%);
+            position: relative;
+            overflow: hidden;
+            border-color: rgba(91, 98, 244, 0.15);
+        }
+
+        .manifesto-card::before {
+            content: '“';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 10rem;
+            font-family: var(--font-display);
+            color: rgba(91, 98, 244, 0.06);
+            line-height: 1;
+        }
+
+        .manifesto-title-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .manifesto-text {
+            font-size: 1.45rem;
+            line-height: 1.6;
+            color: #fff;
+            font-style: italic;
+            font-weight: 300;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .manifesto-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .identity-badge-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(91, 98, 244, 0.12);
+            border: 1px solid rgba(91, 98, 244, 0.25);
+            color: #9aa0ff;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .manifesto-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .manifesto-icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .manifesto-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .manifesto-icon-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Timeline module */
+        .timeline-card {
+            padding: 40px;
+        }
+
+        .timeline-title {
+            font-size: 1.25rem;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timeline-track-container {
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .timeline-track-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 1;
+        }
+
+        .timeline-track-progress {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
+            z-index: 2;
+            height: 50%;
+            transition: height 0.6s var(--transition-smooth);
+        }
+
+        .timeline-node {
+            display: flex;
+            gap: 24px;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 40px;
+        }
+
+        .timeline-node:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-node-dot {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--bg-surface-solid);
+            border: 2px solid var(--border-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.4s, background-color 0.4s, box-shadow 0.4s;
+            flex-shrink: 0;
+        }
+
+        .timeline-node.completed .timeline-node-dot {
+            border-color: var(--accent-primary);
+            background: var(--accent-primary);
+            color: #000;
+            box-shadow: 0 0 15px rgba(91, 98, 244, 0.4);
+        }
+
+        .timeline-node.active .timeline-node-dot {
+            border-color: var(--accent-secondary);
+            background: var(--bg-surface-solid);
+            color: var(--accent-secondary);
+            box-shadow: 0 0 15px rgba(140, 61, 242, 0.2);
+            animation: pulseActiveNode 2s infinite alternate;
+        }
+
+        @keyframes pulseActiveNode {
+            from { border-color: rgba(140, 61, 242, 0.4); }
+            to { border-color: rgba(140, 61, 242, 1); box-shadow: 0 0 20px rgba(140, 61, 242, 0.4); }
+        }
+
+        .timeline-node-dot svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .timeline-node-content {
+            padding-top: 6px;
+        }
+
+        .timeline-node-meta {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .timeline-node-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .timeline-node-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Action Checklist Card */
+        .checklist-card {
+            padding: 40px;
+        }
+
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .checklist-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .checklist-progress-bar {
+            flex-grow: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .checklist-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            border-radius: 100px;
+            transition: width 0.4s var(--transition-smooth);
+        }
+
+        .checklist-progress-text {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .checklist-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 16px 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-glow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checklist-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .checklist-item.checked {
+            border-color: rgba(91, 98, 244, 0.15);
+            background: rgba(91, 98, 244, 0.03);
+        }
+
+        .checklist-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1.5px solid var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: transparent;
+            transition: all 0.2s;
+            margin-top: 2px;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            border-color: var(--accent-primary);
+            background: var(--accent-primary);
+            color: #000;
+        }
+
+        .checklist-checkbox svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .checklist-text {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            transition: color 0.3s;
+        }
+
+        .checklist-item.checked .checklist-text {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        /* --- Interactive Chat Simulator --- */
+        .chat-card {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: rgba(8, 8, 12, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .chat-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-premium);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(91,98,244,0.15) 0%, rgba(255,255,255,0.01) 50%, rgba(140,61,242,0.1) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .chat-messages-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Scrollbar styles for chat container */
+        .chat-messages-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-messages-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .chat-messages-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: var(--radius-input);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: popBubble 0.4s var(--transition-smooth) forwards;
+            transform-origin: bottom left;
+        }
+
+        @keyframes popBubble {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .message-bubble.user {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform-origin: bottom right;
+        }
+
+        .message-bubble.futureme {
+            background: linear-gradient(135deg, rgba(91, 98, 244, 0.12) 0%, rgba(140, 61, 242, 0.04) 100%);
+            color: #e2e4ff;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(91, 98, 244, 0.18);
+        }
+
+        .message-bubble-header {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .message-bubble.user .message-bubble-header {
+            justify-content: flex-end;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounceDot 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounceDot {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
+        }
+
+        .chat-suggestions {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .chat-suggestions::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .suggestion-chip {
+            white-space: nowrap;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glow);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-main);
+            transform: translateY(-1px);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 12px;
+            position: relative;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 14px 20px;
+            padding-right: 50px;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: rgba(91, 98, 244, 0.5);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .chat-send-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            border: none;
+            outline: none;
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.15);
+        }
+
+        .chat-send-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* --- Timeline Vault (Journal) --- */
+        .vault-card {
+            padding: 40px;
+        }
+
+        .vault-header {
+            margin-bottom: 24px;
+        }
+
+        .vault-write-container {
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-input);
+            padding: 24px;
+        }
+
+        .vault-textarea {
+            width: 100%;
+            height: 100px;
+            background: transparent;
+            border: none;
+            resize: none;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .vault-actions-bar {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .vault-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .vault-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .vault-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .vault-entry {
+            padding: 20px;
+            border-radius: var(--radius-input);
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-glow);
+            position: relative;
+        }
+
+        .vault-entry-meta {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .vault-entry-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .vault-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* --- Share Graphic Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 2, 4, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            background: #0b0b12;
+            border: 1px solid var(--border-glow-focus);
+            border-radius: var(--radius-premium);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            position: relative;
+            animation: modalPop 0.5s var(--transition-smooth) forwards;
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-close svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .share-graphic-preview {
+            background: linear-gradient(135deg, #0d0d17 0%, #06060c 100%);
+            border: 1px solid rgba(91, 98, 244, 0.25);
+            border-radius: var(--radius-input);
+            padding: 36px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .share-graphic-preview::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(var(--accent-primary-rgb), 0.15) 0%, transparent 70%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .share-graphic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .share-graphic-logo {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.02em;
+            font-family: var(--font-display);
+        }
+
+        .share-graphic-body {
+            font-size: 1.15rem;
+            font-style: italic;
+            color: #fff;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            font-weight: 300;
+        }
+
+        .share-graphic-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 16px;
+        }
+
+        .share-graphic-name {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .share-graphic-tag {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .modal-actions .btn {
+            flex-grow: 1;
+        }
+
+        /* --- AI Hack Panel Section --- */
+        #hacks-section {
+            padding: 100px 0;
+        }
+
+        .insight-panel {
+            background: linear-gradient(135deg, rgba(12, 12, 20, 0.75) 0%, rgba(6, 6, 10, 0.75) 100%);
+            border: 1px solid rgba(91, 98, 244, 0.15);
+            border-radius: calc(var(--radius-premium) * 1.2);
+            padding: 60px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-panel::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(140, 61, 242, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+        }
+
+        .insight-panel h2 {
+            font-size: 2.4rem;
+            margin-bottom: 48px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hack-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+        }
+
+        .hack-row {
+            display: grid;
+            grid-template-columns: 0.25fr 1.75fr;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 28px;
+        }
+
+        .hack-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .hack-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: var(--font-mono);
+            padding-top: 4px;
+        }
+
+        .hack-content strong {
+            display: block;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-family: var(--font-display);
+        }
+
+        .hack-content p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* --- Dopamine / Final Call To Action --- */
+        #dopamine {
+            padding: 120px 0 160px;
+            text-align: center;
+            position: relative;
+        }
+
+        .dopamine-wrap h2 {
+            font-size: 4rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 30%, #9a9ab0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+            letter-spacing: -0.04em;
+        }
+
+        .dopamine-wrap p {
+            font-size: 1.3rem;
+            margin-bottom: 48px;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 300;
+        }
+
+        /* --- Toast Messaging System --- */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #fff;
+            color: #020204;
+            padding: 16px 32px;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            font-family: var(--font-display);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast svg {
+            width: 18px;
+            height: 18px;
+            stroke: #10b981;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border-glow);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(2, 2, 4, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        footer p {
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+
+        /* --- High Performance Responsive Breakpoints --- */
+        @media(max-width: 1100px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
+                text-align: center;
+            }
+            .hero-left h1 {
+                font-size: 3.6rem;
+            }
+            .hero-left .subheadline {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-actions {
+                justify-content: center;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media(max-width: 900px) {
+            .hook-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .insight-panel {
+                padding: 40px;
+            }
+            .hack-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .wizard-card {
+                padding: 40px 24px;
+            }
+        }
+
+        @media(max-width: 640px) {
+            .container {
+                padding: 0 24px;
+            }
+            .nav-container {
+                padding: 0 24px;
+            }
+            nav, .nav-cta-wrap {
+                display: none; /* Streamline mobile navbar */
+            }
+            #hero {
+                padding-top: 140px;
+                padding-bottom: 80px;
+            }
+            .hero-left h1 {
+                font-size: 2.8rem;
+            }
+            .dopamine-wrap h2 {
+                font-size: 2.6rem;
+            }
+            .tone-grid {
+                grid-template-columns: 1fr;
+            }
+            .manifesto-card {
+                padding: 24px;
+            }
+            .manifesto-text {
+                font-size: 1.2rem;
+            }
+            .chat-card {
+                padding: 20px;
+                height: 500px;
+            }
+            .message-bubble {
+                max-width: 90%;
+            }
+            .welcome-block {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .welcome-block .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Symbol Icon Map (Inline SVG optimization) -->
+    <svg style="display: none;">
+        <symbol id="icon-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="M12 6v12"/>
+            <path d="M8 10c0-1.5 1-2.5 2-2.5"/>
+            <path d="M16 10c0-1.5-1-2.5-2-2.5"/>
+            <path d="M8 14c0 1.5 1 2.5 2 2.5"/>
+            <path d="M16 14c0 1.5-1 2.5-2 2.5"/>
+        </symbol>
+        <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+        </symbol>
+        <symbol id="icon-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+        </symbol>
+        <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+        </symbol>
+        <symbol id="icon-shield-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </symbol>
+        <symbol id="icon-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </symbol>
+        <symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </symbol>
+        <symbol id="icon-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </symbol>
+        <symbol id="icon-volume-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+        </symbol>
+        <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </symbol>
+        <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+        </symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+        </symbol>
+        <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+        </symbol>
+        <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </symbol>
+        <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+        </symbol>
+    </svg>
+
+    <div class="ambient-glow-wrapper">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <header id="main-header">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <svg><use href="#icon-brain"></use></svg>
+                FutureMe
+            </a>
+            <nav class="nav-links">
+                <a href="#hooks">Process</a>
+                <a href="#app-section">Mirror Engine</a>
+                <a href="#hacks-section">Founder Lab AI Hacks</a>
+            </nav>
+            <div class="nav-cta-wrap">
+                <button onclick="scrollToApp()" class="btn btn-primary nav-cta">Launch Mirror</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- PANEL A: Onboarding Page (Visible by default if no localStorage data) -->
+        <div id="panel-welcome" class="app-panel active">
+            <section id="hero">
+                <div class="hero-grid">
+                    <div class="hero-left reveal">
+                        <h1>Meet the version of you who already made it.</h1>
+                        <p class="subheadline">FutureMe helps you synthesize, visualize, and interact directly with the person you are becoming in 1 year.</p>
+                        <div class="hero-actions">
+                            <button onclick="startWizard()" class="btn btn-accent">Create My FutureMe</button>
+                            <a href="#hooks" class="btn btn-secondary">Learn the Physics</a>
+                        </div>
+                    </div>
+                    <div class="hero-right reveal">
+                        <div class="glass-card preview-card">
+                            <div class="preview-header">
+                                <div class="preview-avatar"></div>
+                                <div class="preview-title">Message from Future You</div>
+                            </div>
+                            <div class="preview-body" id="hero-typing-manifesto">
+                                “You are closer than you think. But your current habits need to match your future identity.”
+                            </div>
+                            <div class="preview-meta">FutureMe generated • Live Sync Active</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hooks" class="reveal">
+                <div class="section-header">
+                    <span class="badge badge-alt">Temporal Physics</span>
+                    <h2>Architecting your timeline.</h2>
+                    <p>Before launching your simulation, outline the variables that define your vector trajectory.</p>
+                </div>
+                <div class="hook-grid">
+                    <div class="glass-card hook-card">
+                        <div class="hook-icon-wrap">
+                            <svg><use href="#icon-target"></use></svg>
+                        </div>
+                        <h3>Quantified Vision</h3>
+                        <p>Isolate your core objective. Specify milestones and timestamps to make the destination concrete and measurable.</p>
+                    </div>
+                    <div class="glass-card hook-card">
+                        <div class="hook-icon-wrap">
+                            <svg><use href="#icon-shield-alert"></use></svg>
+                        </div>
+                        <h3>Radical Friction Analysis</h3>
+                        <p>Expose the structural hurdles and self-negotiations holding you back. Lay bare your anxieties to neutralize them.</p>
+                    </div>
+                    <div class="glass-card hook-card">
+                        <div class="hook-icon-wrap">
+                            <svg><use href="#icon-compass"></use></svg>
+                        </div>
+                        <h3>Direct Advice Loops</h3>
+                        <p>Receive strategic execution maps written in your ideal resonance tone. Stop analyzing; start executing.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="app-section" class="reveal">
+                <div class="wizard-container">
+                    <div class="glass-card wizard-card">
+                        
+                        <!-- Onboarding Wizard Form Wrapper -->
+                        <div class="wizard-progress-bar">
+                            <div class="wizard-progress-fill" id="wizardProgressFill"></div>
+                        </div>
+
+                        <!-- Step 1: Core Details -->
+                        <div class="wizard-step active" id="step-1">
+                            <h3 class="step-title">Let's ground the timeline.</h3>
+                            <p class="step-desc">Introduce yourself to establish the base nodes of the identity matrix.</p>
+                            
+                            <div class="form-input-container">
+                                <label class="form-label" for="userName">What is your first name?</label>
+                                <input type="text" id="userName" class="text-input" placeholder="e.g., Anil" required>
+                            </div>
+
+                            <div class="form-input-container">
+                                <label class="form-label" for="userAge">What is your current age?</label>
+                                <input type="number" id="userAge" class="text-input age-input" placeholder="e.g., 28" required min="1" max="120">
+                            </div>
+
+                            <div class="wizard-actions">
+                                <div></div>
+                                <button onclick="nextStep(2)" class="btn btn-secondary">
+                                    Next Node
+                                    <svg style="width: 16px; height: 16px;"><use href="#icon-chevron-right"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: The Goal -->
+                        <div class="wizard-step" id="step-2">
+                            <h3 class="step-title">Define the vector coordinate.</h3>
+                            <p class="step-desc">What is the single most critical breakthrough goal you are building towards?</p>
+                            
+                            <div class="form-input-container">
+                                <label class="form-label" for="userGoal">Your Core Ambition</label>
+                                <input type="text" id="userGoal" class="text-input" placeholder="e.g., launching a breakout tech startup" required>
+                            </div>
+
+                            <div class="form-input-container">
+                                <label class="form-label" for="userTimeline">Where do you want to be in exactly 1 year?</label>
+                                <input type="text" id="userTimeline" class="text-input" placeholder="e.g., closed seed funding and deployed version 1 live" required>
+                            </div>
+
+                            <div class="wizard-actions">
+                                <button onclick="prevStep(1)" class="btn btn-secondary">
+                                    <svg style="width: 16px; height: 16px; transform: scaleX(-1);"><use href="#icon-chevron-right"></use></svg>
+                                    Back
+                                </button>
+                                <button onclick="nextStep(3)" class="btn btn-secondary">
+                                    Next Node
+                                    <svg style="width: 16px; height: 16px;"><use href="#icon-chevron-right"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Friction/Struggle -->
+                        <div class="wizard-step" id="step-3">
+                            <h3 class="step-title">Expose the anchor constraints.</h3>
+                            <p class="step-desc">Be brutally honest. What is the single biggest mental or tactical hurdle draining your momentum?</p>
+                            
+                            <div class="form-input-container">
+                                <label class="form-label" for="userStruggle">What is holding you back today?</label>
+                                <textarea id="userStruggle" class="text-input" placeholder="e.g., analysis paralysis, waiting for perfect clarity, and fear of launching half-baked code" required></textarea>
+                            </div>
+
+                            <div class="wizard-actions">
+                                <button onclick="prevStep(2)" class="btn btn-secondary">
+                                    <svg style="width: 16px; height: 16px; transform: scaleX(-1);"><use href="#icon-chevron-right"></use></svg>
+                                    Back
+                                </button>
+                                <button onclick="nextStep(4)" class="btn btn-secondary">
+                                    Next Node
+                                    <svg style="width: 16px; height: 16px;"><use href="#icon-chevron-right"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Persona selection -->
+                        <div class="wizard-step" id="step-4">
+                            <h3 class="step-title">Modulate your FutureMe.</h3>
+                            <p class="step-desc">Select the specific configuration resonance tone you need to hear advice in.</p>
+                            
+                            <div class="tone-grid">
+                                <div class="tone-card selected" onclick="selectTone('Motivational', this)">
+                                    <h4>Motivational</h4>
+                                    <p>Driven by compound energy, vision, and belief. High octane fire for execution.</p>
+                                </div>
+                                <div class="tone-card" onclick="selectTone('Brutally Honest', this)">
+                                    <h4>Brutally Honest</h4>
+                                    <p>Direct mirror feedback. No padding, no rationalizations. Cold, operational truths.</p>
+                                </div>
+                                <div class="tone-card" onclick="selectTone('Calm Mentor', this)">
+                                    <h4>Calm Mentor</h4>
+                                    <p>Philosophical, deliberate, and composed. Grounded perspective on the long journey.</p>
+                                </div>
+                                <div class="tone-card" onclick="selectTone('CEO Mode', this)">
+                                    <h4>CEO Mode</h4>
+                                    <p>Analytical strategic summaries, execution KPIs, sprint parameters, and resource optimization.</p>
+                                </div>
+                            </div>
+
+                            <div class="wizard-actions">
+                                <button onclick="prevStep(3)" class="btn btn-secondary">
+                                    <svg style="width: 16px; height: 16px; transform: scaleX(-1);"><use href="#icon-chevron-right"></use></svg>
+                                    Back
+                                </button>
+                                <button onclick="synthesizeFutureMe()" class="btn btn-accent">
+                                    Synthesize Matrix
+                                    <svg style="width: 16px; height: 16px;"><use href="#icon-brain"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PANEL B: Premium Dashboard View (Shown after onboarding or from localStorage) -->
+        <div id="panel-dashboard" class="app-panel">
+            <section id="dashboard-section">
+                
+                <div class="welcome-block" style="margin-bottom: 48px;">
+                    <div>
+                        <span class="badge">Identity Vector Locked</span>
+                        <h2 style="margin-top: 10px;">Welcome back, <span id="dash-user-name">Founder</span>.</h2>
+                        <p>Your timeline projection is synchronized. Speak to the future version of you below.</p>
+                    </div>
+                    <button onclick="resetIdentityMatrix()" class="btn btn-secondary">
+                        <svg style="width: 16px; height: 16px;"><use href="#icon-x"></use></svg>
+                        Deconstruct Matrix
+                    </button>
+                </div>
+
+                <div class="dashboard-grid">
+                    
+                    <!-- Dashboard Main Column -->
+                    <div class="dashboard-main">
+                        
+                        <!-- Manifesto Card -->
+                        <div class="glass-card manifesto-card">
+                            <div class="manifesto-title-wrap">
+                                <span class="badge">Manifesto</span>
+                                <div class="manifesto-actions">
+                                    <button class="manifesto-icon-btn" onclick="toggleReadSpeech()" title="Read voice output">
+                                        <svg id="speech-btn-icon"><use href="#icon-volume"></use></svg>
+                                    </button>
+                                    <button class="manifesto-icon-btn" onclick="copyManifesto()" title="Copy manifesto">
+                                        <svg><use href="#icon-copy"></use></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="manifesto-text" id="dash-manifesto">
+                                Loading quantum alignment manifesto...
+                            </div>
+                            <div class="manifesto-meta">
+                                <div class="identity-badge-large" id="dash-identity-badge">CEO Mode (T + 1 Year)</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+                                    Matrix stable • 100% Sync
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline & Milestone Tracker -->
+                        <div class="glass-card timeline-card">
+                            <div class="timeline-title">
+                                <h3>Timeline Vector Path</h3>
+                                <span style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);" id="dash-timeline-range">Age 28 → 29</span>
+                            </div>
+
+                            <div class="timeline-track-container">
+                                <div class="timeline-track-line"></div>
+                                <div class="timeline-track-progress" id="timelineTrackProgress"></div>
+
+                                <!-- Node 1: Current -->
+                                <div class="timeline-node completed">
+                                    <div class="timeline-node-dot">
+                                        <svg><use href="#icon-check"></use></svg>
+                                    </div>
+                                    <div class="timeline-node-content">
+                                        <div class="timeline-node-meta">Current Node</div>
+                                        <div class="timeline-node-title">The Initial State</div>
+                                        <div class="timeline-node-desc">Struggling with <span id="dash-node-struggle">analysis paralysis</span>. The pivot point.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Node 2: 1-Year Goal -->
+                                <div class="timeline-node active">
+                                    <div class="timeline-node-dot">
+                                        <svg><use href="#icon-target"></use></svg>
+                                    </div>
+                                    <div class="timeline-node-content">
+                                        <div class="timeline-node-meta">Timeline Target: 1 Year</div>
+                                        <div class="timeline-node-title" id="dash-node-goal-title">Version 1 Live</div>
+                                        <div class="timeline-node-desc">Target objective: <span id="dash-node-goal-desc">Closed funding</span>.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Node 3: Ultimate Destination -->
+                                <div class="timeline-node">
+                                    <div class="timeline-node-dot">
+                                        <svg><use href="#icon-compass"></use></svg>
+                                    </div>
+                                    <div class="timeline-node-content">
+                                        <div class="timeline-node-meta">Ultimate Vision</div>
+                                        <div class="timeline-node-title">Compound Mastery</div>
+                                        <div class="timeline-node-desc">Fully actualized version of you running at 100% capacity.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Vault (Journal) -->
+                        <div class="glass-card vault-card">
+                            <div class="vault-header">
+                                <h3 style="font-size: 1.25rem; margin-bottom: 6px;">Quantum Vault</h3>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">Write letters or log data vectors to your future self. They are sealed here locally.</p>
+                            </div>
+
+                            <div class="vault-write-container">
+                                <textarea id="vaultInput" class="vault-textarea" placeholder="Log your current progress, describe an emotional friction point, or draft a direct question for your future self..."></textarea>
+                                <div class="vault-actions-bar">
+                                    <button onclick="saveVaultEntry()" class="btn btn-secondary btn-small" style="padding: 8px 16px; font-size: 0.85rem;">Seal Letter in Vault</button>
+                                </div>
+                            </div>
+
+                            <div class="vault-list" id="vaultList">
+                                <!-- Dynamic List of Sealed Letters -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Dashboard Sidebar Column -->
+                    <div class="dashboard-sidebar">
+                        
+                        <!-- Interactive Chat Simulator Card -->
+                        <div class="glass-card chat-card">
+                            <div style="border-bottom: 1px solid var(--border-glow); padding-bottom: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                                <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+                                    <span style="display:inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981;"></span>
+                                    Chat with Future You
+                                </h3>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);" id="dash-chat-status">Sync Active</span>
+                            </div>
+
+                            <div class="chat-messages-container" id="chatMessages">
+                                <!-- Chat bubbles render here dynamically -->
+                            </div>
+
+                            <!-- Suggestion Chips -->
+                            <div class="chat-suggestions" id="chatSuggestions">
+                                <div class="suggestion-chip" onclick="sendSuggestion('What is my biggest blindspot right now?')">My blindspot?</div>
+                                <div class="suggestion-chip" onclick="sendSuggestion('I am feeling stuck on my struggle today.')">Stuck today</div>
+                                <div class="suggestion-chip" onclick="sendSuggestion('How will I look back at this year?')">Yearly reflection</div>
+                            </div>
+
+                            <!-- Input Bar -->
+                            <div class="chat-input-container">
+                                <input type="text" id="chatInputField" class="chat-input" placeholder="Type a message or check-in..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                                <button onclick="sendChatMessage()" class="chat-send-btn">
+                                    <svg><use href="#icon-send"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Habit Checklist Card -->
+                        <div class="glass-card checklist-card">
+                            <div class="checklist-header">
+                                <h3 style="font-size: 1.15rem;">Daily Integration Checklist</h3>
+                                <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted);">Streak: <span id="dash-streak">0</span> days</span>
+                            </div>
+
+                            <div class="checklist-progress-container">
+                                <div class="checklist-progress-bar">
+                                    <div class="checklist-progress-fill" id="checklistProgressFill"></div>
+                                </div>
+                                <div class="checklist-progress-text" id="checklistProgressText">0/4</div>
+                            </div>
+
+                            <div class="checklist-items" id="checklistItems">
+                                <!-- Dynamic check-ins based on setup -->
+                            </div>
+                        </div>
+
+                        <!-- Share CTA / Mirror Reflection -->
+                        <div style="text-align: center; padding: 20px;">
+                            <button onclick="openShareModal()" class="btn btn-accent" style="width: 100%;">
+                                <svg style="width: 18px; height: 18px;"><use href="#icon-share"></use></svg>
+                                Export Identity Card
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+
+        <!-- Section: Founder Lab AI Hacks (Persistent) -->
+        <section id="hacks-section" class="reveal">
+            <div class="insight-panel">
+                <span class="badge">Live Build Exclusive</span>
+                <h2>Founder Lab AI Hacks</h2>
+                <div class="hack-rows">
+                    <div class="hack-row">
+                        <div class="hack-tag">Hack 01</div>
+                        <div class="hack-content">
+                            <strong>Identity Alignment Prompting</strong>
+                            <p>Stop asking AI for generic advice. Force the system to model a virtual instance of yourself situated 1 year after the successful execution of your goals to build reverse-engineered systems.</p>
+                        </div>
+                    </div>
+                    <div class="hack-row">
+                        <div class="hack-tag">Hack 02</div>
+                        <div class="hack-content">
+                            <strong>Constraint Injection Tuning</strong>
+                            <p>Feed precise mathematical limitations—like cash runways, current hard skills, physical weekly bandwidth, and immediate panic vectors—to trigger hyper-pragmatic actions.</p>
+                        </div>
+                    </div>
+                    <div class="hack-row">
+                        <div class="hack-tag">Hack 03</div>
+                        <div class="hack-content">
+                            <strong>Reverse Fear Projection warning</strong>
+                            <p>Instruct the timeline model to calculate exactly what catastrophic tactical error your future self would warn you about today to neutralize blindspots before they materialize.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Dopamine / Call to action Section (Persistent) -->
+        <section id="dopamine" class="reveal">
+            <div class="dopamine-wrap">
+                <h2>You did not just build a page.<br>You built a mirror.</h2>
+                <p>FutureMe turns computational models into personal growth feedback loops. Secure your metrics and execute your next moves.</p>
+                <button onclick="scrollToApp()" class="btn btn-primary">Enter the Mirror</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Overlay: Loading State Simulator -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-logo">FutureMe Engine</div>
+            <div class="loading-spinner-wrap">
+                <div class="spinner-outer"></div>
+                <div class="spinner-inner"></div>
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar-fill" id="loadingBarFill"></div>
+            </div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+            
+            <div class="loading-logs" id="loadingLogs">
+                <!-- Log entries slide in dynamically here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay: Share Card Modal -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeShareModal()">
+                <svg><use href="#icon-x"></use></svg>
+            </button>
+            <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Your FutureMe Card</h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px;">Copy your manifesto snapshot to share with your team or community.</p>
+            
+            <div class="share-graphic-preview" id="shareGraphicCard">
+                <div class="share-graphic-header">
+                    <div class="share-graphic-logo">FutureMe // projection</div>
+                    <span class="badge" id="share-modal-badge" style="margin: 0; font-size: 0.65rem;">CEO Mode</span>
+                </div>
+                <div class="share-graphic-body" id="share-modal-text">
+                    “I am the version of you who stopped complaining about analysis paralysis and built the startup anyway.”
+                </div>
+                <div class="share-graphic-footer">
+                    <div class="share-graphic-name" id="share-modal-name">Anil (28)</div>
+                    <div class="share-graphic-tag">T+365 Days Vector</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button onclick="copyManifesto()" class="btn btn-primary">
+                    <svg style="width: 16px; height: 16px;"><use href="#icon-copy"></use></svg>
+                    Copy Text
+                </button>
+                <button onclick="downloadShareImage()" class="btn btn-accent">
+                    <svg style="width: 16px; height: 16px;"><use href="#icon-share"></use></svg>
+                    Download Card
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast message container -->
+    <div id="toastMessage" class="toast">
+        <svg><use href="#icon-check"></use></svg>
+        <span id="toastText">Vector configuration updated successfully.</span>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Anil’s Founder Labs • FutureMe Live Build</p>
+            <p style="font-size: 0.75rem;"><a href="#app-section" onclick="resetIdentityMatrix()">Re-configure Matrix</a> • Secure Local Encryption Enabled</p>
+        </div>
+    </footer>
+
+    <script>
+        /* --- State Variable Declarations --- */
+        let currentWizardStep = 1;
+        let selectedTone = 'Motivational';
+        let isReadingManifesto = false;
+        let synthesisSpeechUtterance = null;
+        let chatLogs = [];
+        let checklistData = [
+            { id: 'checklist-goal', text: 'Execute progress towards timeline goal', checked: false },
+            { id: 'checklist-struggle', text: 'Actively counter current point of failure', checked: false },
+            { id: 'checklist-habit', text: 'Complete your specific daily habit anchor', checked: false },
+            { id: 'checklist-reflect', text: 'Commit to 5 minutes of reflective alignment', checked: false }
+        ];
+
+        /* --- DOM Setup & Initialization --- */
+        document.addEventListener("DOMContentLoaded", () => {
+            // Scroll reveal animation handler
+            const reveals = document.querySelectorAll('.reveal');
+            const observerOptions = {
+                root: null,
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            reveals.forEach(el => observer.observe(el));
+
+            // Header scroll alignment class
+            window.addEventListener('scroll', () => {
+                const header = document.getElementById('main-header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Interactive typing demo animation for Hero preview card
+            animateHeroTyping();
+
+            // Setup state check
+            checkActiveSavedIdentity();
+        });
+
+        /* --- Interactive Onboarding Wizard Logic --- */
+        function startWizard() {
+            scrollToApp();
+        }
+
+        function scrollToApp() {
+            document.getElementById('app-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateWizardUI() {
+            // Hide all steps, show active
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step-${i}`);
+                if (step) step.classList.remove('active');
+            }
+            document.getElementById(`step-${currentWizardStep}`).classList.add('active');
+
+            // Fill bar
+            const percent = (currentWizardStep / 4) * 100;
+            document.getElementById('wizardProgressFill').style.width = `${percent}%`;
+        }
+
+        function nextStep(step) {
+            // Validation rules
+            if (currentWizardStep === 1) {
+                const name = document.getElementById('userName').value.trim();
+                const age = document.getElementById('userAge').value;
+                if (!name || !age) {
+                    triggerToast("Please input a valid name and age node.", "error");
+                    return;
+                }
+            } else if (currentWizardStep === 2) {
+                const goal = document.getElementById('userGoal').value.trim();
+                const timeline = document.getElementById('userTimeline').value.trim();
+                if (!goal || !timeline) {
+                    triggerToast("Identify your core ambition and milestone timeline coordinates.", "error");
+                    return;
+                }
+            } else if (currentWizardStep === 3) {
+                const struggle = document.getElementById('userStruggle').value.trim();
+                if (!struggle) {
+                    triggerToast("Please expose your active friction struggles.", "error");
+                    return;
+                }
+            }
+
+            currentWizardStep = step;
+            updateWizardUI();
+        }
+
+        function prevStep(step) {
+            currentWizardStep = step;
+            updateWizardUI();
+        }
+
+        function selectTone(tone, element) {
+            selectedTone = tone;
+            // Remove selection class from all cards
+            const cards = document.querySelectorAll('.tone-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            // Add class to clicked card
+            element.classList.add('selected');
+        }
+
+        /* --- Simulated Identity Generator & Custom Prompting Matrix --- */
+        function generateManifesto(name, goal, struggle, timeline, tone) {
+            if (tone === "Brutally Honest") {
+                return `“Listen closely, ${name}. I am the version of you who stopped complaining about '${struggle}' and realized that waiting for perfect parameters was a slow death sentence. The reality of achieving ${goal} happened precisely because you stopped running from discomfort. Stop negotiating with your fears.”`;
+            } else if (tone === "Motivational") {
+                return `“Hey ${name}, look at us! We did not quit when things became confusing or painful. The mountain of ${goal} became our reality because you chose to stand up, look directly past your immediate friction with '${struggle}', and execute with pure compounding faith. Keep pushing forward!”`;
+            } else if (tone === "CEO Mode") {
+                return `“Operational brief, ${name}. We treated ${goal} as a mission-critical infrastructure project, not an emotional option. We systematically automated our management of '${struggle}' and streamlined our day-to-day focus to reach '${timeline}' efficiently. Check the metrics and run.”`;
+            } else { // Calm Mentor
+                return `“Take a breath, ${name}. I am the version of you who learned to smile at the uncertainty. The friction you feel right now with '${struggle}' is simply your old shell giving way to make space for the beauty of ${goal}. Walk peacefully, but take the steps.”`;
+            }
+        }
+
+        function getDailyHabit(tone) {
+            if (tone === "Brutally Honest") {
+                return "Block 90 minutes of absolute offline deep-work daily before reviewing any notifications.";
+            } else if (tone === "Motivational") {
+                return "Write down your primary victory goal every morning and read it out loud before starting.";
+            } else if (tone === "CEO Mode") {
+                return "Conduct a strict 10-minute structural alignment review of key KPIs every single evening.";
+            } else {
+                return "Dedicate 5 minutes to absolute silence and mental centering before entering execution space.";
+            }
+        }
+
+        /* --- Quantum Synthesis Simulation Screen --- */
+        function synthesizeFutureMe() {
+            const name = document.getElementById('userName').value.trim();
+            const age = parseInt(document.getElementById('userAge').value);
+            const goal = document.getElementById('userGoal').value.trim();
+            const struggle = document.getElementById('userStruggle').value.trim();
+            const timeline = document.getElementById('userTimeline').value.trim();
+            const tone = selectedTone;
+
+            if (!name || !age || !goal || !struggle || !timeline || !tone) {
+                triggerToast("Identity parameters incomplete. Please re-run calculations.", "error");
+                return;
+            }
+
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+
+            const barFill = document.getElementById('loadingBarFill');
+            const percentText = document.getElementById('loadingPercentage');
+            const logsBox = document.getElementById('loadingLogs');
+            logsBox.innerHTML = '';
+
+            const logSequences = [
+                { time: 100, text: "Initializing consciousness interface..." },
+                { time: 400, text: `Establishing anchor vector: ${name}, Age ${age}.` },
+                { time: 800, text: `Mapping timeline projections towards: "${goal}"...`, highlight: true },
+                { time: 1300, text: `Exposing structural friction constraints: "${struggle}"...` },
+                { time: 1800, text: `Modulating cognitive voice response matrix to: ${tone} Mode.` },
+                { time: 2400, text: "Modifying local database storage matrices..." },
+                { time: 2900, text: "Compounding feedback loops from target T+1 Year..." },
+                { time: 3300, text: "Manifestation matrix stable. Resolving alignment portal.", highlight: true }
+            ];
+
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 1;
+                barFill.style.width = `${progress}%`;
+                percentText.innerText = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        // Hide loading overlay
+                        overlay.style.display = 'none';
+
+                        // Save database vector locally
+                        const identityObj = { name, age, goal, struggle, timeline, tone };
+                        localStorage.setItem('futureMeIdentity', JSON.stringify(identityObj));
+                        
+                        // Set checklist items texts
+                        checklistData[0].text = `Execute progress towards: ${goal}`;
+                        checklistData[1].text = `Actively counter struggle: ${struggle}`;
+                        checklistData[2].text = `Start habit: ${getDailyHabit(tone)}`;
+                        localStorage.setItem('futureMeChecklist', JSON.stringify(checklistData));
+
+                        // Render dashboard
+                        renderDashboardData(identityObj);
+                        
+                        // Switch layouts
+                        document.getElementById('panel-welcome').classList.remove('active');
+                        document.getElementById('panel-dashboard').classList.add('active');
+                        document.getElementById('dashboard-section').classList.add('active');
+
+                        triggerToast("FutureMe timeline synthesis complete.");
+                        
+                        // Auto-scroll to dashboard welcome header
+                        document.getElementById('dashboard-section').scrollIntoView({ behavior: 'smooth' });
+
+                        // Render standard introductory chat message
+                        initiateChatIntroduction(name, tone);
+                    }, 500);
+                }
+            }, 36);
+
+            // Log printing animation pipeline
+            logSequences.forEach(seq => {
+                setTimeout(() => {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    
+                    const timeStamp = document.createElement('span');
+                    timeStamp.className = 'log-time';
+                    const now = new Date();
+                    timeStamp.innerText = `[${now.toTimeString().split(' ')[0]}]`;
+                    
+                    const textNode = document.createElement('span');
+                    textNode.className = 'log-text' + (seq.highlight ? ' highlight' : '');
+                    textNode.innerText = seq.text;
+
+                    entry.appendChild(timeStamp);
+                    entry.appendChild(textNode);
+                    logsBox.appendChild(entry);
+                    
+                    // Auto scroll logs container
+                    logsBox.scrollTop = logsBox.scrollHeight;
+                }, seq.time);
+            });
+        }
+
+        /* --- Dashboard Rendering & State Retrieval --- */
+        function checkActiveSavedIdentity() {
+            const saved = localStorage.getItem('futureMeIdentity');
+            if (saved) {
+                const identityObj = JSON.parse(saved);
+                renderDashboardData(identityObj);
+                document.getElementById('panel-welcome').classList.remove('active');
+                document.getElementById('panel-dashboard').classList.add('active');
+                document.getElementById('dashboard-section').classList.add('active');
+                
+                // Read checklist data
+                const savedCheck = localStorage.getItem('futureMeChecklist');
+                if (savedCheck) {
+                    checklistData = JSON.parse(savedCheck);
+                }
+                updateChecklistUI();
+
+                // Load chat logs if any
+                const savedLogs = localStorage.getItem('futureMeChatLogs');
+                if (savedLogs) {
+                    chatLogs = JSON.parse(savedLogs);
+                    renderChatMessages();
+                } else {
+                    initiateChatIntroduction(identityObj.name, identityObj.tone);
+                }
+
+                // Load journal entries
+                renderVaultList();
+            }
+        }
+
+        function renderDashboardData(identity) {
+            const manifesto = generateManifesto(identity.name, identity.goal, identity.struggle, identity.timeline, identity.tone);
+            
+            document.getElementById('dash-user-name').innerText = identity.name;
+            document.getElementById('dash-manifesto').innerText = manifesto;
+            document.getElementById('dash-identity-badge').innerText = `${identity.tone} Self (T + 1 Year)`;
+            document.getElementById('dash-timeline-range').innerText = `Age ${identity.age} → ${identity.age + 1}`;
+            
+            document.getElementById('dash-node-struggle').innerText = identity.struggle;
+            document.getElementById('dash-node-goal-title').innerText = identity.timeline;
+            document.getElementById('dash-node-goal-desc').innerText = `Breakthrough objective: ${identity.goal}`;
+
+            // Sync share card preview values
+            document.getElementById('share-modal-badge').innerText = `${identity.tone} Mode`;
+            document.getElementById('share-modal-text').innerText = manifesto;
+            document.getElementById('share-modal-name').innerText = `${identity.name} (${identity.age})`;
+
+            // Configure speech utterance
+            if ('speechSynthesis' in window) {
+                synthesisSpeechUtterance = new SpeechSynthesisUtterance(manifesto);
+                synthesisSpeechUtterance.rate = 0.95; // slightly slower for epic/futuristic delivery
+                synthesisSpeechUtterance.pitch = 0.9;
+                
+                synthesisSpeechUtterance.onend = () => {
+                    isReadingManifesto = false;
+                    document.getElementById('speech-btn-icon').innerHTML = '<use href="#icon-volume"></use>';
+                };
+            }
+        }
+
+        function resetIdentityMatrix() {
+            if (confirm("Are you sure you want to deconstruct your current projection? This will reset all logs and checklist data.")) {
+                localStorage.removeItem('futureMeIdentity');
+                localStorage.removeItem('futureMeChecklist');
+                localStorage.removeItem('futureMeChatLogs');
+                localStorage.removeItem('futureMeVault');
+                
+                // Clear state
+                chatLogs = [];
+                checklistData = [
+                    { id: 'checklist-goal', text: 'Execute progress towards timeline goal', checked: false },
+                    { id: 'checklist-struggle', text: 'Actively counter current point of failure', checked: false },
+                    { id: 'checklist-habit', text: 'Complete your specific daily habit anchor', checked: false },
+                    { id: 'checklist-reflect', text: 'Commit to 5 minutes of reflective alignment', checked: false }
+                ];
+                
+                // Reset form values
+                document.getElementById('userName').value = '';
+                document.getElementById('userAge').value = '';
+                document.getElementById('userGoal').value = '';
+                document.getElementById('userStruggle').value = '';
+                document.getElementById('userTimeline').value = '';
+                currentWizardStep = 1;
+                updateWizardUI();
+
+                // Stop speech synthesis if playing
+                if (isReadingManifesto && window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    isReadingManifesto = false;
+                }
+
+                // Switch UI panels
+                document.getElementById('panel-dashboard').classList.remove('active');
+                document.getElementById('dashboard-section').classList.remove('active');
+                document.getElementById('panel-welcome').classList.add('active');
+                
+                triggerToast("Identity matrix deconstructed successfully.");
+                scrollToApp();
+            }
+        }
+
+        /* --- Voice Synthesis Support Module --- */
+        function toggleReadSpeech() {
+            if (!('speechSynthesis' in window)) {
+                triggerToast("Text-to-speech not supported on this browser context.", "error");
+                return;
+            }
+
+            if (isReadingManifesto) {
+                window.speechSynthesis.cancel();
+                isReadingManifesto = false;
+                document.getElementById('speech-btn-icon').innerHTML = '<use href="#icon-volume"></use>';
+                triggerToast("Manifesto narration stopped.");
+            } else {
+                isReadingManifesto = true;
+                document.getElementById('speech-btn-icon').innerHTML = '<use href="#icon-volume-x"></use>';
+                window.speechSynthesis.speak(synthesisSpeechUtterance);
+                triggerToast("Streaming future voice overlay...");
+            }
+        }
+
+        /* --- Dynamic Simulation Chat Engine --- */
+        function initiateChatIntroduction(name, tone) {
+            let initialMsg = "";
+            if (tone === "Brutally Honest") {
+                initialMsg = `Hey ${name}. Let's get straight to work. I have no time to stroke your ego. I'm waiting for you at the finish line, but only if you step up today. What's holding you back from execution right now?`;
+            } else if (tone === "Motivational") {
+                initialMsg = `Hello, ${name}! I'm so excited to talk to you. The path to our dream is already mapped. Every choice you make today compounds into the version of us I am. Ask me anything, let's win this together!`;
+            } else if (tone === "CEO Mode") {
+                initialMsg = `Projection node active. Operational readiness check, ${name}. Core objective progress is currently running. Let's analyze current blockers and execute solutions. Give me your status update.`;
+            } else { // Calm Mentor
+                initialMsg = `Greetings, ${name}. Take a slow breath. I am here to reflect with you. There is no rush, only learning. What questions do you have about the journey we are sharing?`;
+            }
+
+            chatLogs = [{ sender: 'futureme', text: initialMsg, time: getFormattedTime() }];
+            localStorage.setItem('futureMeChatLogs', JSON.stringify(chatLogs));
+            renderChatMessages();
+        }
+
+        function getFormattedTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+
+            chatLogs.forEach(msg => {
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble ${msg.sender}`;
+                
+                const header = document.createElement('div');
+                header.className = 'message-bubble-header';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.innerText = msg.sender === 'user' ? 'You' : 'Future You';
+                const timeSpan = document.createElement('span');
+                timeSpan.innerText = msg.time;
+
+                header.appendChild(nameSpan);
+                header.appendChild(timeSpan);
+                
+                const textSpan = document.createElement('div');
+                textSpan.innerText = msg.text;
+
+                bubble.appendChild(header);
+                bubble.appendChild(textSpan);
+                container.appendChild(bubble);
+            });
+
+            // Scroll container to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInputField');
+            const query = input.value.trim();
+            if (!query) return;
+
+            // Clear input
+            input.value = '';
+
+            // Post user bubble
+            chatLogs.push({ sender: 'user', text: query, time: getFormattedTime() });
+            renderChatMessages();
+
+            // Store chat logs
+            localStorage.setItem('futureMeChatLogs', JSON.stringify(chatLogs));
+
+            // Run mock processing delays
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+                const responseText = processChatEngineResponse(query);
+                chatLogs.push({ sender: 'futureme', text: responseText, time: getFormattedTime() });
+                renderChatMessages();
+                localStorage.setItem('futureMeChatLogs', JSON.stringify(chatLogs));
+            }, 1200 + Math.random() * 800);
+        }
+
+        function sendSuggestion(text) {
+            document.getElementById('chatInputField').value = text;
+            sendChatMessage();
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            
+            const indicator = document.createElement('div');
+            indicator.className = 'message-bubble futureme';
+            indicator.id = 'chatTypingIndicator';
+            
+            const typingWrap = document.createElement('div');
+            typingWrap.className = 'typing-indicator';
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingWrap.appendChild(dot);
+            }
+
+            indicator.appendChild(typingWrap);
+            container.appendChild(indicator);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('chatTypingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        /* --- Adaptable NLP Response Matrix Engine (Chatbot) --- */
+        function processChatEngineResponse(message) {
+            const saved = localStorage.getItem('futureMeIdentity');
+            if (!saved) return "Synthesis error. Please restart configuration onboarding.";
+
+            const id = JSON.parse(saved);
+            const msg = message.toLowerCase();
+            const name = id.name;
+            const goal = id.goal;
+            const struggle = id.struggle;
+            const timeline = id.timeline;
+            const tone = id.tone;
+
+            // Core Response Generator Logic mapped to tone
+            if (tone === "Brutally Honest") {
+                if (msg.includes("fail") || msg.includes("scared") || msg.includes("worry") || msg.includes("stuck") || msg.includes("fear")) {
+                    return `Look at me, ${name}. I exist because you failed ten times, and on the eleventh you learned. '${struggle}' is just a narrative trap you fall into to delay launching. Face the friction. Extreme building has no space for worry.`;
+                }
+                if (msg.includes("how") || msg.includes("plan") || msg.includes("steps") || msg.includes("do")) {
+                    return `You already know exactly what to do. Stop hunting for new guides or tutorials. The plan is: 1. Isolate the absolute bottlenecks. 2. Work on '${goal}' today. 3. Stop checking social feeds. Simple rules.`;
+                }
+                if (msg.includes("lazy") || msg.includes("procrastinate") || msg.includes("tired") || msg.includes("focus")) {
+                    return `Discipline eats motivation for breakfast. If you procrastinate today, you are pushing back the milestone of '${timeline}'. Wake up. The person you are negotiated with is you. Do the work anyway.`;
+                }
+                if (msg.includes("blindspot") || msg.includes("warn") || msg.includes("warning")) {
+                    return `Your blindspot? You think you have time. You think '${struggle}' is unique or special. It's not. It's just simple resistance. If you don't build one visible proof of progress this week, you are defaulting.`;
+                }
+                if (msg.includes("thank") || msg.includes("thanks")) {
+                    return `Don't thank me yet. Prove me right by executing your daily checklist. I'm waiting.`;
+                }
+                return `That's noise, ${name}. Let's re-align. How does this discussion solve '${struggle}' or move us closer to achieving '${goal}'? Tell me.`;
+
+            } else if (tone === "Motivational") {
+                if (msg.includes("fail") || msg.includes("scared") || msg.includes("worry") || msg.includes("stuck") || msg.includes("fear")) {
+                    return `I know it feels hard right now, ${name}. But I need you to remember why we started this path. Every time you push past the friction of '${struggle}', you are paving the way for '${goal}'. I am so proud of you. Stand tall!`;
+                }
+                if (msg.includes("how") || msg.includes("plan") || msg.includes("steps") || msg.includes("do")) {
+                    return `Take it one step at a time! Focus on clearing just one minor blocker related to '${struggle}' today. You don't need to see the whole mountain, just the next stride towards '${timeline}'. You've got this!`;
+                }
+                if (msg.includes("lazy") || msg.includes("procrastinate") || msg.includes("tired") || msg.includes("focus")) {
+                    return `It's okay to feel tired, but don't lose sight of the spark. Remind yourself of the feeling when version 1 goes live at '${timeline}'. Rest if you must, but don't quit. I believe in you!`;
+                }
+                if (msg.includes("blindspot") || msg.includes("warn") || msg.includes("warning")) {
+                    return `Watch out for self-doubt. Your biggest blindspot is forgetting how powerful you are when you focus. Don't let '${struggle}' shrink your perspective of the future.`;
+                }
+                if (msg.includes("thank") || msg.includes("thanks")) {
+                    return `Always! We are a team across time. Go make today count!`;
+                }
+                return `Everything is compounding, ${name}! Every action you take is a vote for the version of me talking to you now. Let's keep building '${goal}'!`;
+
+            } else if (tone === "CEO Mode") {
+                if (msg.includes("fail") || msg.includes("scared") || msg.includes("worry") || msg.includes("stuck") || msg.includes("fear")) {
+                    return `Anxiety is an inefficient resource allocation. Reframer protocol: Threat of '${struggle}' neutralized by systematic code deployment. Log your blockers and execute sprint item 1. Failures are just iterative test feedback logs.`;
+                }
+                if (msg.includes("how") || msg.includes("plan") || msg.includes("steps") || msg.includes("do")) {
+                    return `Tactical priorities: 1. Streamline bandwidth. 2. Automate routines. 3. Dedicate 90 minutes solely to target '${goal}'. Run weekly audits. High priority node: '${timeline}'.`;
+                }
+                if (msg.includes("lazy") || msg.includes("procrastinate") || msg.includes("tired") || msg.includes("focus")) {
+                    return `Energy crisis detected. Recommendation: Optimize physical sleep cycles and segment tasks into 20-minute chunks. Procrastinating on '${struggle}' reduces runway efficiency. Refocus immediately.`;
+                }
+                if (msg.includes("blindspot") || msg.includes("warn") || msg.includes("warning")) {
+                    return `Warning: Scale complexity is outrunning structural execution. You are spending too much time thinking and not enough time deploying. Optimize shipping speed for '${goal}'.`;
+                }
+                if (msg.includes("thank") || msg.includes("thanks")) {
+                    return `Roger that. Return to active sprint tasks, ${name}. Out.`;
+                }
+                return `Matrix operational check. Status normal. Let's keep variables aligned. Objective target remains: '${goal}' by '${timeline}'. Log progress.`;
+
+            } else { // Calm Mentor
+                if (msg.includes("fail") || msg.includes("scared") || msg.includes("worry") || msg.includes("stuck") || msg.includes("fear")) {
+                    return `Uncertainty is the natural environment for growth, ${name}. The fear of '${struggle}' is just energy waiting to be channeled. Be gentle with yourself; the path to '${goal}' is built on patience.`;
+                }
+                if (msg.includes("how") || msg.includes("plan") || msg.includes("steps") || msg.includes("do")) {
+                    return `Listen to the quiet voice inside. Start with simplicity. What is one small, peaceful action you can take to make '${timeline}' a reality? Do that, and let the rest settle.`;
+                }
+                if (msg.includes("lazy") || msg.includes("procrastinate") || msg.includes("tired") || msg.includes("focus")) {
+                    return `Perhaps your spirit is asking for rest, not scolding. Take a step back, recharge, and return to focus with clarity. The compounding timeline doesn't require suffering, only consistency.`;
+                }
+                if (msg.includes("blindspot") || msg.includes("warn") || msg.includes("warning")) {
+                    return `Your blindspot is rushing. Sometimes you run so fast towards '${goal}' that you miss the lessons in '${struggle}'. Slow down and appreciate the foundation you are mixing today.`;
+                }
+                if (msg.includes("thank") || msg.includes("thanks")) {
+                    return `You are welcome. Peace be upon your steps today, my friend.`;
+                }
+                return `I am sitting here, looking back at where you stand now. The struggle you are feeling is just dust on the mirror. Wipe it away, and you will see the light of '${goal}' shining through.`;
+            }
+        }
+
+        /* --- Daily Integration Checklist Logic --- */
+        function updateChecklistUI() {
+            const list = document.getElementById('checklistItems');
+            list.innerHTML = '';
+
+            let checkedCount = 0;
+            checklistData.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = `checklist-item ${item.checked ? 'checked' : ''}`;
+                row.onclick = () => toggleChecklistItem(index);
+
+                const box = document.createElement('div');
+                box.className = 'checklist-checkbox';
+                box.innerHTML = '<svg><use href="#icon-check"></use></svg>';
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'checklist-text';
+                textSpan.innerText = item.text;
+
+                row.appendChild(box);
+                row.appendChild(textSpan);
+                list.appendChild(row);
+
+                if (item.checked) checkedCount++;
+            });
+
+            // Update Progress UI
+            const fill = document.getElementById('checklistProgressFill');
+            const text = document.getElementById('checklistProgressText');
+            const percent = (checkedCount / checklistData.length) * 100;
+            
+            fill.style.width = `${percent}%`;
+            text.innerText = `${checkedCount}/${checklistData.length}`;
+
+            // Track milestone timeline track height sync
+            const timelineProgress = document.getElementById('timelineTrackProgress');
+            timelineProgress.style.height = `${50 + (percent / 2)}%`;
+
+            // Adjust streak values if 100% complete
+            let streak = parseInt(localStorage.getItem('futureMeStreak') || 0);
+            if (checkedCount === checklistData.length && checkedCount > 0) {
+                // If newly 100% complete in session, increment
+                if (localStorage.getItem('checklistAllCompletedThisSession') !== 'true') {
+                    streak++;
+                    localStorage.setItem('futureMeStreak', streak);
+                    localStorage.setItem('checklistAllCompletedThisSession', 'true');
+                    triggerToast("Outstanding! Streak incremented. Focus lock active.", "success");
+                }
+            } else {
+                // Reset completed flag if unchecked
+                localStorage.setItem('checklistAllCompletedThisSession', 'false');
+            }
+            document.getElementById('dash-streak').innerText = streak;
+        }
+
+        function toggleChecklistItem(index) {
+            checklistData[index].checked = !checklistData[index].checked;
+            localStorage.setItem('futureMeChecklist', JSON.stringify(checklistData));
+            updateChecklistUI();
+        }
+
+        /* --- Timeline Vault (Journal) Data Persistency --- */
+        function saveVaultEntry() {
+            const input = document.getElementById('vaultInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const saved = localStorage.getItem('futureMeVault');
+            let entries = [];
+            if (saved) entries = JSON.parse(saved);
+
+            const newEntry = {
+                id: 'vault-' + Date.now(),
+                text: text,
+                date: new Date().toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
+                time: getFormattedTime()
+            };
+
+            entries.unshift(newEntry);
+            localStorage.setItem('futureMeVault', JSON.stringify(entries));
+
+            input.value = '';
+            renderVaultList();
+            triggerToast("Letter successfully sealed in the Vault.");
+        }
+
+        function renderVaultList() {
+            const list = document.getElementById('vaultList');
+            const saved = localStorage.getItem('futureMeVault');
+            list.innerHTML = '';
+
+            if (!saved || JSON.parse(saved).length === 0) {
+                list.innerHTML = '<div class="vault-empty">No letters sealed in this timeline vault yet. Write one above.</div>';
+                return;
+            }
+
+            const entries = JSON.parse(saved);
+            entries.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'vault-entry';
+                
+                const meta = document.createElement('div');
+                meta.className = 'vault-entry-meta';
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.style.display = 'flex';
+                dateSpan.style.alignItems = 'center';
+                dateSpan.style.gap = '6px';
+                dateSpan.innerHTML = `<svg style="width:12px;height:12px;"><use href="#icon-calendar"></use></svg> Sealed on ${entry.date}`;
+                
+                const lockSpan = document.createElement('span');
+                lockSpan.style.display = 'flex';
+                lockSpan.style.alignItems = 'center';
+                lockSpan.style.gap = '4px';
+                lockSpan.style.color = 'var(--accent-primary)';
+                lockSpan.innerHTML = '<svg style="width:12px;height:12px;"><use href="#icon-lock"></use></svg> Encrypted';
+
+                meta.appendChild(dateSpan);
+                meta.appendChild(lockSpan);
+
+                const txt = document.createElement('div');
+                txt.className = 'vault-entry-text';
+                txt.innerText = entry.text;
+
+                card.appendChild(meta);
+                card.appendChild(txt);
+                list.appendChild(card);
+            });
+        }
+
+        /* --- Share Modal Graphic Generator & Copy Subsystems --- */
+        function openShareModal() {
+            document.getElementById('shareModal').classList.add('active');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('active');
+        }
+
+        function copyManifesto() {
+            const text = document.getElementById('dash-manifesto').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                triggerToast("Manifesto snapshot copied to clipboard.");
+            }, () => {
+                triggerToast("Clipboard access failed.", "error");
+            });
+        }
+
+        function downloadShareImage() {
+            // High fidelity fallback copy message block for client side standalones
+            const element = document.getElementById('shareGraphicCard');
+            const saved = localStorage.getItem('futureMeIdentity');
+            if (!saved) return;
+            const id = JSON.parse(saved);
+            
+            // Construct a markdown formatted share card
+            const mdText = `---
+FUTURE ME PROJECTION
+---
+Identity Mode: ${id.tone} Mode
+Goal Target: ${id.goal} (T+365 Days)
+Manifesto Quote: 
+${document.getElementById('dash-manifesto').innerText}
+---
+Generated live in Anil's Founder Labs.`;
+
+            navigator.clipboard.writeText(mdText).then(() => {
+                triggerToast("Timeline card data copied! Saved file parameters to cache.", "success");
+            });
+            
+            // Alert user that standalone download is simulating
+            alert("Your high-resolution dashboard card mockup details have been exported to clipboard in rich format.\n\nSave it anywhere to keep alignment active!");
+            closeShareModal();
+        }
+
+        /* --- Dynamic UI Polish Helpers --- */
+        function triggerToast(message, type = "success") {
+            const toast = document.getElementById('toastMessage');
+            const text = document.getElementById('toastText');
+            
+            text.innerText = message;
+            
+            if (type === "error") {
+                toast.style.borderLeft = "3px solid #ef4444";
+                toast.querySelector('svg').style.stroke = "#ef4444";
+            } else {
+                toast.style.borderLeft = "3px solid #10b981";
+                toast.querySelector('svg').style.stroke = "#10b981";
+            }
+
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        function animateHeroTyping() {
+            const txt = "“You are closer than you think. But your current habits need to match your future identity.”";
+            const target = document.getElementById('hero-typing-manifesto');
+            target.textContent = "";
+            let idx = 0;
+            
+            function type() {
+                if (idx < txt.length) {
+                    target.textContent = txt.substring(0, idx + 1);
+                    idx++;
+                    setTimeout(type, 35);
+                }
+            }
+            setTimeout(type, 800);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "futureme",
+  "version": "1.0.0",
+  "description": "FutureMe single-page portal dev script",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server -p 3000"
+  },
+  "keywords": [],
+  "author": "Anil's Founder Labs",
+  "license": "ISC"
+}

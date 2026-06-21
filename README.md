@@ -17,6 +17,13 @@ FutureMe is a single-page web application designed to act as an AI reflection to
 - **CSS3:** Custom styles, CSS variables, glassmorphism effects, and animations (no external frameworks).
 - **Vanilla JavaScript:** DOM manipulation, state management (via `localStorage`), and interactive elements.
 
+## AI Technologies & Future Integration
+
+FutureMe is built to leverage **Generative AI technologies** to make interactions with your "Future Self" deeply personalized and impactful:
+- **Current MVP:** Utilizes a simulated AI response system optimized for immediate, private, and offline feedback.
+- **Future Roadmap:** Designed to seamlessly integrate with advanced Large Language Models (LLMs) such as **OpenAI (GPT-4)**, **Anthropic (Claude 3)**, or **Google (Gemini)**. This integration will power dynamic, context-aware conversations based on the user's journal entries (The Vault), habit tracking, and personal goals.
+- **Data Privacy:** Because the foundation is built on `localStorage`, any future API integration can be configured to process prompts client-side to ensure personal reflections remain secure and private.
+
 ## Getting Started
 
 ### Prerequisites
